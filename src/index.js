@@ -14,5 +14,6 @@ if (process.env.NODE_ENV !== 'production') {
 
 const container = document.createElement('div');
 container.classList.add('container');
-container.innerHTML = '!!!!!!!!!!!!!!!!!!!!!!!!!';
-// ReactDOM.render(<App />, container);
+ReactDOM.render(<App />, container);
+
+console.log('It works!');
