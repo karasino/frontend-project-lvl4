@@ -25,7 +25,7 @@ export default () => (
           <Login />
         </Route>
 				<Route path="/">
-          <Home />
+          <div>Home page</div>
         </Route>
 			</Switch>
     </div>
