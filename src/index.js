@@ -12,8 +12,6 @@ if (process.env.NODE_ENV !== 'production') {
   localStorage.debug = 'chat:*';
 }
 
-const container = document.createElement('div');
+const container = document.querySelector('.container-lg');
 container.classList.add('container');
 ReactDOM.render(<App />, container);
-
-console.log('It works!');

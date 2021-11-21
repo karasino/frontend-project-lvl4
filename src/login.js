@@ -9,7 +9,7 @@ const SignupSchema = Yup.object().shape({
   	.min(2, 'Too Short!')
   	.max(20, 'Too Long!')
   	.required('Required'),
-  lastName: Yup.string()
+  password: Yup.string()
   	.min(6, 'Too Short!')
   	.max(20, 'Too Long!')
   	.required('Required'),
@@ -29,16 +29,17 @@ export default () => (
 			}}
 		>
 			{({ errors, touched }) => (
-				<Form>
-					<Field name="login" />
-					{errors.login && touched.login ? (
-						<div>{errors.login}</div>
-					) : null}
-					<Field name="password" />
+				<Form class="log-in-form">
+					<label htmlFor="login">Login</label>
+					<Field name="login" class="form-control" />
+					{(errors.login && touched.login) && <div>{errors.login}</div>}
+
+					<label htmlFor="password">Password</label>
+					<Field name="password" class="form-control" />
 					{errors.password && touched.password ? (
 						<div>{errors.password}</div>
 					) : null}
-					<button type="submit">Submit</button>
+					<button type="submit" class="btn btn-primary">Submit</button>
 				</Form>
 			)}
 		</Formik>

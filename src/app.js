@@ -10,13 +10,13 @@ import Login from './login.js';
 export default () => (
   <Router>
     <div>
-			<nav>
-				<ul>
-					<li>
-						<Link to="/">Home</Link>
+			<nav class="navbar navbar-expand-lg navbar-light bg-light">
+				<ul class="navbar-nav">
+					<li class="nav-item active">
+						<Link to="/" class="nav-link">Home</Link>
 					</li>
-					<li>
-						<Link to="/login">Sign in</Link>
+					<li class="nav-item">
+						<Link to="/login" class="nav-link">Sign in</Link>
 					</li>
 				</ul>
 			</nav>
