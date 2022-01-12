@@ -62,6 +62,7 @@ const LoginPage = () => {
               <Form.Label htmlFor="username">Username</Form.Label>
               <Form.Control
                 onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
                 value={formik.values.username}
                 placeholder="username"
                 name="username"
@@ -70,20 +71,22 @@ const LoginPage = () => {
                 isInvalid={authFailed}
                 ref={inputRef}
               />
+              {errors.username && touched.username ? (<div>{errors.username}</div>) : null}
             </Form.Group>
             <Form.Group>
               <Form.Label htmlFor="password">Password</Form.Label>
               <Form.Control
                 type="password"
                 onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
                 value={formik.values.password}
                 placeholder="password"
                 name="password"
                 id="password"
                 autoComplete="current-password"
                 isInvalid={authFailed}
-                required
               />
+              {errors.password && touched.password ? (<div>{errors.password}</div>) : null}
               <Form.Control.Feedback type="invalid">the username or password is incorrect</Form.Control.Feedback>
             </Form.Group>
             <Button type="submit" variant="outline-primary">Submit</Button>
