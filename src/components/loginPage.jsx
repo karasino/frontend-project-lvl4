@@ -3,6 +3,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useFormik } from 'formik';
 import { Button, Form } from 'react-bootstrap';
 import { useLocation, useNavigate } from 'react-router-dom';
+import * as yup from 'yup';
 import useAuth from '../hooks/index.jsx';
 import routes from '../routes.js';
 
@@ -16,12 +17,12 @@ const LoginPage = () => {
     inputRef.current.focus();
   }, []);
 
-  const signupSchema = Yup.object().shape({
-    login: Yup.string()
+  const signupSchema = yup.object().shape({
+    username: yup.string()
       .min(2, 'Too Short!')
       .max(20, 'Too Long!')
       .required('Required'),
-    password: Yup.string()
+    password: yup.string()
       .min(4, 'Too Short!')
       .max(20, 'Too Long!')
       .required('Required'),
@@ -37,12 +38,14 @@ const LoginPage = () => {
       setAuthFailed(false);
 
       try {
+        console.log('try case');
         const response = await axios.post(routes.loginPath(), values);
         localStorage.setItem('userToken', JSON.stringify(response.data));
         auth.logIn();
         const { from } = location.state || { from: { pathname: '/' } };
         navigate(from);
       } catch (err) {
+        console.log('error case');
         if (err.isAxiosError && err.response.status === 401) {
           setAuthFailed(true);
           inputRef.current.select();
@@ -71,7 +74,7 @@ const LoginPage = () => {
                 isInvalid={authFailed}
                 ref={inputRef}
               />
-              {errors.username && touched.username ? (<div>{errors.username}</div>) : null}
+              {formik.errors.username && formik.touched.username ? (<div>{formik.errors.username}</div>) : null}
             </Form.Group>
             <Form.Group>
               <Form.Label htmlFor="password">Password</Form.Label>
@@ -86,7 +89,7 @@ const LoginPage = () => {
                 autoComplete="current-password"
                 isInvalid={authFailed}
               />
-              {errors.password && touched.password ? (<div>{errors.password}</div>) : null}
+              {formik.errors.password && formik.touched.password ? (<div>{formik.errors.password}</div>) : null}
               <Form.Control.Feedback type="invalid">the username or password is incorrect</Form.Control.Feedback>
             </Form.Group>
             <Button type="submit" variant="outline-primary">Submit</Button>
@@ -98,62 +101,3 @@ const LoginPage = () => {
 };
 
 export default LoginPage;
-
-export default () => (
-	<div>
-		<h1>Log in, please.</h1>
-		<Formik
-			initialValues={{
-				username: '',
-				password: '',
-			}}
-			validationSchema={signupSchema}
-			onSubmit={values => {
-				alert(JSON.stringify(values, null, 2));
-			}}
-		>
-			{({
-        errors,
-        touched,
-        isSubmitting,
-        handleChange,
-        handleSubmit,
-        isValid,
-      }) => (
-				<Form noValidate class="log-in-form" onSubmit={handleSubmit}>
-          <Form.Group controlId="formUsername">
-            <Form.Label>Username</Form.Label>
-            <Form.Control
-              type="text"
-              placeholder="Enter username"
-              name="username"
-              onChange={handleChange}
-              isInvalid={errors.username}
-              isValid={touched.username && !errors.username}
-            />
-            <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
-            <Form.Control.Feedback type="invalid">
-              {errors.username}
-            </Form.Control.Feedback>
-          </Form.Group>
-
-          <Form.Group controlId="formPassword">
-            <Form.Label>Password</Form.Label>
-            <Form.Control
-              type="password"
-              placeholder="Enter password"
-              name="password"
-              onChange={handleChange}
-              isInvalid={errors.password}
-            />
-            <Form.Control.Feedback type="invalid">
-              {errors.password}
-            </Form.Control.Feedback>
-          </Form.Group>
-
-					<Button type="submit" disabled={isSubmitting}>Submit</Button>
-				</Form>
-			)}
-		</Formik>
-	</div>
-);

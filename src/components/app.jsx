@@ -8,8 +8,8 @@ import {
   useLocation,
 } from 'react-router-dom';
 import { Button, Navbar, Nav } from 'react-bootstrap';
-import Login from './login.js';
-import NoMatch from './noMatch.js';
+import LoginPage from './loginPage.jsx';
+import NoMatch from './noMatch.jsx';
 import authContext from '../contexts/index.jsx';
 import useAuth from '../hooks/index.jsx';
 
