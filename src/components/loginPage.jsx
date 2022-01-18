@@ -36,16 +36,13 @@ const LoginPage = () => {
     validationSchema: signupSchema,
     onSubmit: async (values) => {
       setAuthFailed(false);
-
       try {
-        console.log('try case');
         const response = await axios.post(routes.loginPath(), values);
         localStorage.setItem('userToken', JSON.stringify(response.data));
         auth.logIn();
         const { from } = location.state || { from: { pathname: '/' } };
         navigate(from);
       } catch (err) {
-        console.log('error case');
         if (err.isAxiosError && err.response.status === 401) {
           setAuthFailed(true);
           inputRef.current.select();
@@ -74,7 +71,9 @@ const LoginPage = () => {
                 isInvalid={authFailed}
                 ref={inputRef}
               />
-              {formik.errors.username && formik.touched.username ? (<div>{formik.errors.username}</div>) : null}
+              {formik.errors.username && formik.touched.username
+                ? (<div>{formik.errors.username}</div>)
+                : null}
             </Form.Group>
             <Form.Group>
               <Form.Label htmlFor="password">Password</Form.Label>
@@ -89,7 +88,9 @@ const LoginPage = () => {
                 autoComplete="current-password"
                 isInvalid={authFailed}
               />
-              {formik.errors.password && formik.touched.password ? (<div>{formik.errors.password}</div>) : null}
+              {formik.errors.password && formik.touched.password
+                ? (<div>{formik.errors.password}</div>)
+                : null}
               <Form.Control.Feedback type="invalid">the username or password is incorrect</Form.Control.Feedback>
             </Form.Group>
             <Button type="submit" variant="outline-primary">Submit</Button>

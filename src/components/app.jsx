@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useState } from 'react';
 import {
   BrowserRouter as Router,
   Routes,
@@ -7,9 +7,10 @@ import {
   Navigate,
   useLocation,
 } from 'react-router-dom';
-import { Button, Navbar, Nav } from 'react-bootstrap';
+import { Navbar, Nav } from 'react-bootstrap';
 import LoginPage from './loginPage.jsx';
 import NoMatch from './noMatch.jsx';
+import HomePage from './homePage.jsx';
 import authContext from '../contexts/index.jsx';
 import useAuth from '../hooks/index.jsx';
 
@@ -55,7 +56,7 @@ const App = () => (
             path="/"
             element={(
               <PrivateRoute>
-                <div>Home page</div>
+                <HomePage />
               </PrivateRoute>
             )}
           />
