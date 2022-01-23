@@ -2,6 +2,9 @@ import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from 'react-redux';
 import axios from 'axios';
 import { ListGroup } from 'react-bootstrap';
+import { useFormik } from 'formik';
+import { io } from 'socket.io-client';
+import * as _ from 'lodash';
 import routes from '../routes.js';
 import { addChannel } from "../slices/channelsSlice.js";
 import { addMessage } from "../slices/messagesSlice.js";
@@ -9,12 +12,15 @@ import { addMessage } from "../slices/messagesSlice.js";
 const HomePage = () => {
   const [renderedChannelId, setRenderedChannelId] = useState();
   const dispatch = useDispatch();
+  const socket = io();
   const channels = useSelector(({ channels: { entities, ids } }) => (
     ids.map((id) => entities[id])
   ));
+  const userToken = JSON.parse(localStorage.getItem('userToken'));
   useEffect(async () => {
     try {
-      const header = { Authorization: `Bearer ${JSON.parse(localStorage.getItem('userToken')).token}` };
+      console.log(userToken.username);
+      const header = { Authorization: `Bearer ${userToken.token}` };
       const response = await axios.get(routes.dataPath(), { headers: header });
       const { channels, messages, currentChannelId } = response.data;
       setRenderedChannelId(currentChannelId);
@@ -28,6 +34,19 @@ const HomePage = () => {
       throw(err);
     }
   }, []);
+
+  const formik = useFormik({
+    initialValues: {
+      message: '',
+    },
+    onSubmit: (values) => {
+      const message = {
+        id: _.uniqueId(),
+        author: '',
+        text: values.message,
+      };
+    }
+  });
 
   const generateChannel = (channel) => {
     const { name, id } = channel;
