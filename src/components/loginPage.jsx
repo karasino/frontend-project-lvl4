@@ -85,7 +85,6 @@ const LoginPage = () => {
                 placeholder="password"
                 name="password"
                 id="password"
-                autoComplete="current-password"
                 isInvalid={authFailed}
               />
               {formik.errors.password && formik.touched.password
