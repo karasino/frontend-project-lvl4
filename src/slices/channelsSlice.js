@@ -14,6 +14,16 @@ export const channelsSlice = createSlice({
       state.entities[channel.id] = channel;
       state.ids.push(channel.id);
     },
+    addChannels: (state, action) => {
+      const channels = action.payload;
+      const entities = {};
+      for (const channel of channels) {
+        entities[channel.id] = channel;
+      }
+      const ids = channels.map((channel) => channel.id);
+      state.entities = entities;
+      state.ids = ids;
+    },
     removeChannel: (state, action) => {
       const { channelId } = action.payload;
       delete state.entities[channelId];
@@ -26,6 +36,6 @@ export const channelsSlice = createSlice({
   },
 });
 
-export const { addChannel, removeChannel, updateChannel } = channelsSlice.actions;
+export const { addChannel, addChannels, removeChannel, updateChannel } = channelsSlice.actions;
 
 export default channelsSlice.reducer;
