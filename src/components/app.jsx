@@ -49,7 +49,7 @@ const App = () => (
         </Nav>
       </Navbar>
 
-      <div className="container p-3">
+      <div className="container p-3 h-100">
         <Routes>
           <Route path="/login" element={<LoginPage />} />
           <Route

@@ -1,33 +1,45 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useSelector, useDispatch } from 'react-redux';
 import axios from 'axios';
-import { ListGroup, Form, Button } from 'react-bootstrap';
+import {
+  ListGroup,
+  Form,
+  Button,
+  Nav,
+  Modal,
+  Dropdown,
+  ButtonGroup,
+  Stack,
+  Container,
+  Row,
+  Col
+} from 'react-bootstrap';
 import { useFormik } from 'formik';
 import { uniqueId } from "lodash";
 import socket from '../service/socket.js';
 import routes from '../routes.js';
 import { addChannel, addChannels } from "../slices/channelsSlice.js";
 import { addMessage, addMessages } from "../slices/messagesSlice.js";
+import { openAddChannelModal } from "../slices/modalsSlice.js";
+import AddChannelModal from './addChannelModal.jsx';
 
 const MessageForm = React.forwardRef((props, ref) => {
   const { formik, messageSending } = props;
   return (
     <Form onSubmit={formik.handleSubmit}>
       <fieldset disabled={messageSending}>
-        <Form.Group>
+        <Stack direction="horizontal" gap={1}>
           <Form.Control
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
             value={formik.values.message}
-            contentEditable
             placeholder="Type a message"
             name="message"
             id="message"
-            autoComplete="message"
             ref={ref}
           />
-        </Form.Group>
-        <Button type="submit">Send</Button>
+          <Button type="submit">Send</Button>
+        </Stack>
       </fieldset>
     </Form>
   );
@@ -37,7 +49,7 @@ const HomePage = () => {
   const [renderedChannelId, setRenderedChannelId] = useState();
   const [messageSending, setMessageSending] = useState(false);
   const dispatch = useDispatch();
-  const messageInputRef = useRef();
+  const messageInputRef = useRef(null);
 
   useEffect(async () => {
     messageInputRef.current.focus();
@@ -50,6 +62,9 @@ const HomePage = () => {
       dispatch(addMessages(messages));
       socket.on('newMessage', (message) => {
         dispatch(addMessage({ message }));
+      });
+      socket.on('newChannel', (channel) => {
+        dispatch(addChannel({ channel }));
       });
     } catch(err) {
       throw(err);
@@ -65,27 +80,51 @@ const HomePage = () => {
   const userToken = JSON.parse(localStorage.getItem('userToken'));
 
   const generateChannel = (channel) => {
-    const { name, id } = channel;
-  
+    const { name, id, removable } = channel;
+    const buttonVariant = id === renderedChannelId ? 'primary' : 'outline-primary';
     const handleChannelChange = () => {
       setRenderedChannelId(id);
     };
+    const removableChannel = (
+      <Dropdown as={ButtonGroup} className="d-flex">
+        <Button
+          variant={buttonVariant}
+          onClick={handleChannelChange}
+          className="rounded-0 text-start flex-grow-1"
+        >
+          <div>{name}</div>
+        </Button>
+        <Dropdown.Toggle className="rounded-0 flex-grow-0" variant={buttonVariant} />
+        <Dropdown.Menu>
+          <Dropdown.Item eventKey="1">Rename</Dropdown.Item>
+          <Dropdown.Item eventKey="2">Delete</Dropdown.Item>
+        </Dropdown.Menu>
+      </Dropdown>
+    );
+    const fixedChannel = (
+    <Button
+      variant={buttonVariant}
+      onClick={handleChannelChange}
+      className="w-100 rounded-0 text-start"
+    >
+      <div>{name}</div>
+    </Button>
+    );
 
     return (
-      <ListGroup.Item
-        key={id}
-        as="a"
-        active={renderedChannelId === id}
-        onClick={handleChannelChange}
-      >
-        {name}
-      </ListGroup.Item>
+      <Nav.Item key={id}>
+        {removable ? removableChannel : fixedChannel}
+      </Nav.Item>
     );
   };
   
   const generateMessage = (message) => {
     const { author, text } = message;
     return <ListGroup.Item key={uniqueId()}>{`${author}: ${text}`}</ListGroup.Item>;
+  };
+
+  const handleAddChannel = () => {
+
   };
 
   const formik = useFormik({
@@ -98,7 +137,6 @@ const HomePage = () => {
         author: userToken.username,
         text: values.message,
         channelId: renderedChannelId,
-        id: uniqueId('msg_'),
       };
       socket.emit('newMessage', message, (response) => {
         if (response.status !== 'ok') {
@@ -111,16 +149,27 @@ const HomePage = () => {
   });
 
 	return (
-		<div className="container">
-			<div className="row">
-				<div className="col-sm-3" style={{'height': '100vh'}}>
-          <ListGroup>
-            {channelsList.map(generateChannel)}
-          </ListGroup>
+		<div className="d-flex flex-column h-100">
+			<div className="row h-100">
+				<div className="col-sm-3 h-100">
+          <Nav className="flex-column">
+            <Stack gap={2}>
+              <div className="d-flex justify-content-between">
+                <span>Channels</span>
+                <Button
+                  variant="outline-primary"
+                  onClick={() => {dispatch(openAddChannelModal())}}
+                >
+                  Add
+                </Button>
+              </div>
+              <div>{channelsList.map(generateChannel)}</div>
+            </Stack>
+          </Nav>
         </div>
-				<div className="col-sm-9">
-					<div className="row">
-						<div className="col-sm-12 overflow-auto" style={{'height': '80vh'}}>
+				<div className="col-sm-9 h-100">
+					<div className="row h-100">
+						<div className="col-sm-12 overflow-auto h-100">
               <ListGroup variant="flush">
                 {
                   messagesList
@@ -129,12 +178,10 @@ const HomePage = () => {
                 }
               </ListGroup>
             </div>
-						<div
-              className="col-sm-12"
-              style={{'height': '20vh'}}
-            >
+						<div className="col-sm-12">
               <MessageForm formik={formik} messageSending={messageSending} ref={messageInputRef}/>
             </div>
+            <AddChannelModal />
 					</div>
 				</div>
 			</div>

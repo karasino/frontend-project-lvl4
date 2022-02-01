@@ -1,7 +1,7 @@
 import axios from 'axios';
 import React, { useEffect, useRef, useState } from 'react';
 import { useFormik } from 'formik';
-import { Button, Form } from 'react-bootstrap';
+import { Button, Form, Stack } from 'react-bootstrap';
 import { useLocation, useNavigate } from 'react-router-dom';
 import * as yup from 'yup';
 import useAuth from '../hooks/index.jsx';
@@ -63,41 +63,43 @@ const LoginPage = () => {
         <div className="col-sm-4">
           <Form onSubmit={formik.handleSubmit} className="p-3">
             <fieldset disabled={userDataSending}>
-              <Form.Group>
-                <Form.Label htmlFor="username">Username</Form.Label>
-                <Form.Control
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  value={formik.values.username}
-                  placeholder="username"
-                  name="username"
-                  id="username"
-                  autoComplete="username"
-                  isInvalid={authFailed}
-                  ref={inputRef}
-                />
-                {formik.errors.username && formik.touched.username
-                  ? (<div>{formik.errors.username}</div>)
-                  : null}
-              </Form.Group>
-              <Form.Group>
-                <Form.Label htmlFor="password">Password</Form.Label>
-                <Form.Control
-                  type="password"
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  value={formik.values.password}
-                  placeholder="password"
-                  name="password"
-                  id="password"
-                  isInvalid={authFailed}
-                />
-                {formik.errors.password && formik.touched.password
-                  ? (<div>{formik.errors.password}</div>)
-                  : null}
-                <Form.Control.Feedback type="invalid">the username or password is incorrect</Form.Control.Feedback>
-              </Form.Group>
-              <Button type="submit" variant="outline-primary">Submit</Button>
+              <Stack gap={2}>
+                <Form.Group>
+                  <Form.Label htmlFor="username">Username</Form.Label>
+                  <Form.Control
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    value={formik.values.username}
+                    placeholder="username"
+                    name="username"
+                    id="username"
+                    autoComplete="username"
+                    isInvalid={authFailed}
+                    ref={inputRef}
+                  />
+                  {formik.errors.username && formik.touched.username
+                    ? (<div>{formik.errors.username}</div>)
+                    : null}
+                </Form.Group>
+                <Form.Group>
+                  <Form.Label htmlFor="password">Password</Form.Label>
+                  <Form.Control
+                    type="password"
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    value={formik.values.password}
+                    placeholder="password"
+                    name="password"
+                    id="password"
+                    isInvalid={authFailed}
+                  />
+                  {formik.errors.password && formik.touched.password
+                    ? (<div>{formik.errors.password}</div>)
+                    : null}
+                  <Form.Control.Feedback type="invalid">the username or password is incorrect</Form.Control.Feedback>
+                </Form.Group>
+                <Button type="submit" variant="outline-primary">Submit</Button>
+              </Stack>
             </fieldset>
           </Form>
         </div>
