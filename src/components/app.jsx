@@ -11,8 +11,8 @@ import { Navbar, Nav } from 'react-bootstrap';
 import LoginPage from './loginPage.jsx';
 import NoMatch from './noMatch.jsx';
 import HomePage from './homePage.jsx';
-import authContext from '../contexts/index.jsx';
-import useAuth from '../hooks/index.jsx';
+import authContext from '../contexts/auth.jsx';
+import useAuth from '../hooks/auth.jsx';
 
 const AuthProvider = ({ children }) => {
   const [loggedIn, setLoggedIn] = useState(false);

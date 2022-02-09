@@ -2,17 +2,18 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Modal, Button, Form, Stack } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { useFormik } from 'formik';
-import socket from '../service/socket.js';
+import useSocket from '../hooks/socket.jsx';
 import { closeAddChannelModal } from '../slices/modalsSlice.js';
 
 const AddChannelModal = () => {
   const [dataSending, setDataSending] = useState(false);
-  // const inputRef = useRef(null);
+  const inputRef = useRef(null);
   const dispatch = useDispatch();
+  const socket = useSocket();
   const modalIsOpen = useSelector((state) => state.modals.addChannelModalIsOpen);
 
   useEffect(() => {
-    // inputRef.current.focus();
+    inputRef.current.focus();
   }, []);
 
   const formik = useFormik({
@@ -47,7 +48,7 @@ const AddChannelModal = () => {
                 placeholder="Enter new channel"
                 name="channelName"
                 id="channelName"
-                // ref={inputRef}
+                ref={inputRef}
               />
               <Button type="submit" variant="primary">Add</Button>
               <Button variant="secondary" onClick={() => dispatch(closeAddChannelModal())}>Close</Button>
@@ -57,6 +58,25 @@ const AddChannelModal = () => {
       </Modal.Body>
     </Modal>
   );
+  /* return (
+    <Form onSubmit={formik.handleSubmit}>
+    <fieldset disabled={dataSending}>
+      <Stack gap={2}>
+        <Form.Control
+          onChange={formik.handleChange}
+          onBlur={formik.handleBlur}
+          value={formik.values.channelName}
+          placeholder="Enter new channel"
+          name="channelName"
+          id="channelName"
+          ref={inputRef}
+        />
+        <Button type="submit" variant="primary">Add</Button>
+        <Button variant="secondary" onClick={() => dispatch(closeAddChannelModal())}>Close</Button>
+      </Stack>
+    </fieldset>
+  </Form>
+  ); */
 };
 
 export default AddChannelModal;

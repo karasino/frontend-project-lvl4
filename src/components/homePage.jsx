@@ -16,12 +16,12 @@ import {
 } from 'react-bootstrap';
 import { useFormik } from 'formik';
 import { uniqueId } from "lodash";
-import socket from '../service/socket.js';
 import routes from '../routes.js';
-import { addChannel, addChannels } from "../slices/channelsSlice.js";
-import { addMessage, addMessages } from "../slices/messagesSlice.js";
+import { addChannels } from "../slices/channelsSlice.js";
+import { addMessages } from "../slices/messagesSlice.js";
 import { openAddChannelModal } from "../slices/modalsSlice.js";
 import AddChannelModal from './addChannelModal.jsx';
+import useSocket from '../hooks/socket.jsx';
 
 const MessageForm = React.forwardRef((props, ref) => {
   const { formik, messageSending } = props;
@@ -50,6 +50,7 @@ const HomePage = () => {
   const [messageSending, setMessageSending] = useState(false);
   const dispatch = useDispatch();
   const messageInputRef = useRef(null);
+  const socket = useSocket();
 
   useEffect(async () => {
     messageInputRef.current.focus();
@@ -60,12 +61,6 @@ const HomePage = () => {
       setRenderedChannelId(currentChannelId);
       dispatch(addChannels(channels));
       dispatch(addMessages(messages));
-      socket.on('newMessage', (message) => {
-        dispatch(addMessage({ message }));
-      });
-      socket.on('newChannel', (channel) => {
-        dispatch(addChannel({ channel }));
-      });
     } catch(err) {
       throw(err);
     }

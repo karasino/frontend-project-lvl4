@@ -4,7 +4,7 @@ import { useFormik } from 'formik';
 import { Button, Form, Stack } from 'react-bootstrap';
 import { useLocation, useNavigate } from 'react-router-dom';
 import * as yup from 'yup';
-import useAuth from '../hooks/index.jsx';
+import useAuth from '../hooks/auth.jsx';
 import routes from '../routes.js';
 
 const LoginPage = () => {
